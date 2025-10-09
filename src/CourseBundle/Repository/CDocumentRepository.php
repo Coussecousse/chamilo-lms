@@ -61,6 +61,20 @@ final class CDocumentRepository extends ResourceRepository
         ;
     }
 
+    /**
+     * @return CDocument[]
+     */
+    public function findAllByCourse(Course $course): array
+    {
+        return $this->createQueryBuilder('d')
+            ->innerJoin('d.resourceNode', 'node')
+            ->innerJoin('node.resourceLinks', 'l')
+            ->where('l.course = :course')
+            ->setParameter('course', $course)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function countUserDocuments(User $user, Course $course, ?Session $session = null, ?CGroup $group = null): int
     {
         $qb = $this->getResourcesByCourseLinkedToUser($user, $course, $session, $group);

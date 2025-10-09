@@ -2105,6 +2105,19 @@ class DocumentManager
     }
 
     /**
+     * Calculates the total size of all documents in a course.
+     *
+     * @return int size in bytes
+     */
+    public static function get_total_space(): int
+    {
+        $course = api_get_course_entity();
+        $repo = Container::getDocumentRepository();
+
+        return $repo->getTotalSize($course->getResourceNode(), $course);
+    }
+
+    /**
      * Checks if there is enough place to add a file on a directory
      * on the base of a maximum directory size allowed.
      *
@@ -2119,9 +2132,7 @@ class DocumentManager
     {
         if ($max_dir_space) {
             $max_dir_space = $max_dir_space * 1024 * 1024;
-            $courseEntity = api_get_course_entity();
-            $repo = Container::getDocumentRepository();
-            $total = $repo->getFolderSize($courseEntity->getResourceNode(), $courseEntity);
+            $total = self::get_total_space();
 
             if (($file_size + $total) > $max_dir_space) {
                 return false;

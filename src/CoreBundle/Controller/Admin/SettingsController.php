@@ -145,18 +145,20 @@ class SettingsController extends BaseController
         $url = $accessUrlHelper->getCurrent();
         $manager->setUrl($url);
         $schemaAlias = $manager->convertNameSpaceToService($namespace);
-
+        dump($schemaAlias);
         $keyword = (string) $request->query->get('keyword', '');
         $settings = $manager->load($namespace);
+        dump($settings);
 
         $form = $this->getSettingsFormFactory()->create(
             $schemaAlias,
             null,
             ['allow_extra_fields' => true]
         );
+        dump($form);
 
         $form->setData($settings);
-
+        dump($form);
         $isPartial =
             $request->isMethod('PATCH')
             || 'PATCH' === strtoupper((string) $request->request->get('_method'))

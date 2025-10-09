@@ -17,4 +17,10 @@ export default {
   getTemplates: async (courseId) => {
     return baseService.get(`/template/all-templates/${courseId}`)
   },
+  /**
+   * Retrieve usage data for documents.
+   *
+   * @returns {Promise}
+   */
+  getUsageData: () => axios.get("/documents/usage"),
 }

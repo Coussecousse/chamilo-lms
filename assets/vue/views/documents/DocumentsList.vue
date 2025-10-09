@@ -504,6 +504,7 @@ import SectionHeader from "../../components/layout/SectionHeader.vue"
 import { checkIsAllowedToEdit } from "../../composables/userPermissions"
 import { usePlatformConfig } from "../../store/platformConfig"
 import BaseTable from "../../components/basecomponents/BaseTable.vue"
+import Actions from "../../components/social/Actions.vue"
 
 const store = useStore()
 const route = useRoute()
@@ -560,6 +561,7 @@ filters.value.loadNode = 1
 const selectedItems = ref([])
 
 const items = computed(() => store.getters["documents/getRecents"])
+console.log(items)
 const isLoading = computed(() => store.getters["documents/isLoading"])
 
 const totalItems = computed(() => store.getters["documents/getTotalItems"])
@@ -947,12 +949,33 @@ function showSlideShowWithFirstImage() {
   document.querySelector('button.fancybox-button--play')?.click()
 }
 
-function showUsageDialog() {
-  usageData.value = {
-    datasets: [{ data: [83, 14, 5] }],
-    labels: ["Course", "Teacher", "Available space"],
+async function showUsageDialog() {
+  try {
+    const response = await axios.get('/api/documents/usage', {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    console.log("Response received:", response)
+    console.log("Response data:", response.data)
+    console.log("Response status:", response.status)
+    usageData.value = response.data
+  } catch (error) {
+    console.error("Error fetching document usage:", error)
+    if (error.response) {
+      console.error("Error response status:", error.response.status)
+      console.error("Error response data:", error.response.data)
+      console.error("Error response headers:", error.response.headers)
+    } else if (error.request) {
+      console.error("Error request:", error.request)
+    } else {
+      console.error("Error message:", error.message)
+    }
+    usageData.value = { datasets: [{ data: [] }], labels: [] }
   }
   isFileUsageDialogVisible.value = true
+  console.log(usageData.value)
 }
 
 function showRecordAudioDialog() {
